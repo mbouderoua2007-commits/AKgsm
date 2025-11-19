@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login</title>
+<style>
+    body {
+        font-family: Arial;
+        background: linear-gradient(135deg, #00ffe0, #0077ff);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+    }
+
+    .box {
+        background: rgba(255, 255, 255, 0.15);
+        padding: 30px;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        width: 300px;
+        text-align: center;
+        color: #fff;
+    }
+
+    .box input {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border: none;
+        border-radius: 10px;
+    }
+
+    .box button {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        background: #00ffe0;
+        font-weight: bold;
+        cursor: pointer;
+    }
+</style>
+</head>
+
+<body>
+<div class="box">
+    <h2>Login</h2>
+    <input type="text" id="user" placeholder="Username">
+    <input type="password" id="pass" placeholder="Password">
+    <button onclick="login()">Sign In</button>
+    <p id="msg"></p>
+</div>
+
+<script>
+    // هنا تحدد المستخدمين والباسورد
+    const users = {
+        "kader": "1234",
+        "admin": "admin123",
+        "test": "0000",
+        "chifae": "1234",
+        "lotfi": "1234",
+        "badi": "1234",
+        "mohamed": "1234"
+    };
+
+    function login() {
+        let u = document.getElementById("user").value;
+        let p = document.getElementById("pass").value;
+        let msg = document.getElementById("msg");
+
+        if (users[u] && users[u] === p) {
+            localStorage.setItem("logged", u); // خزن المستخدم
+            window.location.href = "web.html"; // روح للداشبورد
+        } else {
+            msg.style.color = "red";
+            msg.innerText = "Wrong username or password!";
+        }
+    }
+</script>
+
+</body>
+</html>
