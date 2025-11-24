@@ -1,98 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FRP Removal - AK Unlock</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AK Unlock - Order Service</title>
+<style>
+    body {
+        background: #0d0d0d;
+        font-family: Arial, sans-serif;
+        color: white;
+        margin: 0;
+        padding: 0;
+    }
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #0e0e0e;
-            color: #fff;
-            margin: 0;
-            padding: 0;
-        }
+    .container {
+        width: 90%;
+        max-width: 450px;
+        margin: 40px auto;
+        background: #111;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 0 10px #000;
+    }
 
-        .header {
-            background: #111;
-            padding: 15px 20px;
-            text-align: center;
-            font-size: 22px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            border-bottom: 2px solid #2ecc71;
-        }
+    h2 {
+        text-align: center;
+        color: #00ff75;
+        margin-bottom: 20px;
+    }
 
-        .container {
-            max-width: 700px;
-            margin: 70px auto;
-            background: #1a1a1a;
-            padding: 40px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 0 20px rgba(0,0,0,0.4);
-        }
+    label {
+        font-size: 14px;
+        margin-top: 10px;
+        display: block;
+    }
 
-        h2 {
-            font-size: 32px;
-            margin-bottom: 10px;
-            color: #2ecc71;
-        }
+    input, select, textarea {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 6px;
+        border: none;
+        background: #222;
+        color: white;
+    }
 
-        p {
-            font-size: 18px;
-            color: #bbb;
-        }
+    .btn {
+        width: 100%;
+        margin-top: 20px;
+        padding: 12px;
+        background: #00ff75;
+        color: black;
+        font-size: 18px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+    }
 
-        .soon {
-            margin-top: 30px;
-            font-size: 45px;
-            font-weight: bold;
-            color: #2ecc71;
-            animation: blink 1.5s infinite;
-        }
-
-        @keyframes blink {
-            0%   { opacity: 1; }
-            50%  { opacity: 0.2; }
-            100% { opacity: 1; }
-        }
-
-        .back-btn {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 12px 20px;
-            background: #2ecc71;
-            color: #000;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .back-btn:hover {
-            background: #27ae60;
-        }
-    </style>
+    .btn:hover {
+        background: #00d968;
+    }
+</style>
 </head>
-
 <body>
 
-    <div class="header">
-        AK Unlock – FRP Removal
-    </div>
+<div class="container">
+    <h2>Place Your Order</h2>
 
-    <div class="container">
-        <h2>FRP Removal Service</h2>
-        <p>
-            This page will soon include Samsung FRP Removal via Test Mode  
-            and full AK Unlock tools integration.
-        </p>
+    <label>Your Name</label>
+    <input id="name" type="text" placeholder="Enter your name">
 
-        <div class="soon">SOON…</div>
+    <label>Phone Number</label>
+    <input id="phone" type="text" placeholder="Ex: +213...">
 
-        <a class="back-btn" href="web.html">⬅ Back to Home</a>
-    </div>
+    <label>Device Model</label>
+    <input id="device" type="text" placeholder="Ex: Samsung A12">
+
+    <label>Service</label>
+    <select id="service">
+        <option>Samsung FRP</option>
+        <option>HONOR FRP Key</option>
+        <option>xiaomi frp</option>
+        <option>oppo frp</option>
+        <option>google pixel frp</option>
+    </select>
+
+    <label>IMEI / Serial</label>
+    <input id="imei" type="text" placeholder="Ex: 356xxxxxxxx">
+
+    <button class="btn" onclick="sendOrder()">Submit Order</button>
+</div>
+
+<script>
+function sendOrder() {
+    let name = document.getElementById("name").value;
+    let phone = document.getElementById("phone").value;
+    let device = document.getElementById("device").value;
+    let service = document.getElementById("service").value;
+    let imei = document.getElementById("imei").value;
+
+    let botToken = "8524648929:AAFexjrwIaf1Dr0MZdtjsgONu1q-lpPsFKw";
+    let chatId = "8380637588";
+
+    let txt = 
+`📩 NEW ORDER:
+👤 Name: ${name}
+📞 Phone: ${phone}
+📱 Device: ${device}
+🛠 Service: ${service}
+🔢 IMEI/Serial: ${imei}
+`;
+
+    let url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(txt)}`;
+
+    fetch(url)
+        .then(() => alert("✔ Order Sent Successfully!"))
+        .catch(() => alert("❌ Error sending order."));
+}
+</script>
 
 </body>
 </html>
