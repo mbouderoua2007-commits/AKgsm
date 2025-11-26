@@ -3,123 +3,215 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AK Unlock - Order Service</title>
+<title>Place Your Order - AK Unlock</title>
 <style>
-    body {
-        background: #0d0d0d;
+    body{
+        background:#0e0e0e;
         font-family: Arial, sans-serif;
-        color: white;
-        margin: 0;
-        padding: 0;
+        color:white;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        height:100vh;
+        padding:20px;
     }
-
-    .container {
-        width: 90%;
-        max-width: 450px;
-        margin: 40px auto;
-        background: #111;
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 0 10px #000;
+    .card{
+        background:#111;
+        width:480px;
+        padding:35px;
+        border-radius:15px;
+        box-shadow:0 0 20px rgba(0,255,0,0.2);
     }
-
-    h2 {
-        text-align: center;
-        color: #00ff75;
-        margin-bottom: 20px;
+    h2{
+        text-align:center;
+        color:#00ff77;
+        margin-bottom:25px;
     }
-
-    label {
-        font-size: 14px;
-        margin-top: 10px;
-        display: block;
+    input, select, textarea{
+        width:100%;
+        padding:12px;
+        margin:8px 0;
+        border:none;
+        background:#1c1c1c;
+        border-radius:8px;
+        color:white;
+        font-size:15px;
     }
-
-    input, select, textarea {
-        width: 100%;
-        padding: 10px;
-        margin-top: 5px;
-        border-radius: 6px;
-        border: none;
-        background: #222;
-        color: white;
+    button{
+        width:100%;
+        padding:15px;
+        background:#00ff77;
+        border:none;
+        color:black;
+        font-size:18px;
+        border-radius:10px;
+        cursor:pointer;
+        margin-top:10px;
+        font-weight:bold;
     }
-
-    .btn {
-        width: 100%;
-        margin-top: 20px;
-        padding: 12px;
-        background: #00ff75;
-        color: black;
-        font-size: 18px;
-        border-radius: 8px;
-        font-weight: bold;
-        cursor: pointer;
+    .price-box{
+        margin-top:15px;
+        padding:10px;
+        background:#141414;
+        border-radius:8px;
+        color:#00ff77;
+        font-weight:bold;
+        display:none;
     }
-
-    .btn:hover {
-        background: #00d968;
+    .terms{
+        margin-top:20px;
+        font-size:12px;
+        color:#888;
     }
 </style>
 </head>
+
 <body>
 
-<div class="container">
+<div class="card">
+
     <h2>Place Your Order</h2>
 
     <label>Your Name</label>
-    <input id="name" type="text" placeholder="Enter your name">
+    <input type="text" id="name" placeholder="Enter your name">
 
     <label>Phone Number</label>
-    <input id="phone" type="text" placeholder="Ex: +213...">
+    <input type="text" id="phone" placeholder="Ex: +213...">
 
     <label>Device Model</label>
-    <input id="device" type="text" placeholder="Ex: Samsung A12">
+    <input type="text" id="model" placeholder="Ex: Samsung A12">
 
     <label>Service</label>
-    <select id="service">
-        <option>Samsung FRP Remot</option>
-        <option>Samsung FRP</option>
-        <option>HONOR FRP Key</option>
-        <option>xiaomi frp</option>
-        <option>oppo frp</option>
-        <option>google pixel frp</option>
+    <select id="service" onchange="updatePrice(); loadSubOptions();">
+        <option value="">Select a service</option>
+        <option value="Samsung FRP Remot">Samsung FRP Remot</option>
+        <option value="Xiaomi Auth Remove">Xiaomi Auth Remove</option>
+        <option value="Huawei ID Remove">Huawei ID Remove</option>
+        <option value="iPhone LOSTE FMI Off">iPhone FMI Off</option>
     </select>
 
-    <label>IMEI / Serial</label>
-    <input id="imei" type="text" placeholder="Ex: 356xxxxxxxx">
+    <!-- Sub Services -->
+    <select id="subservice" style="display:none; margin-top:10px;"></select>
 
-    <button class="btn" onclick="sendOrder()">Submit Order</button>
+    <label>IMEI / Serial</label>
+    <input type="text" id="imei" placeholder="Ex: 356xxxxxxxx">
+
+    <label>Upload Screenshot</label>
+    <input type="file" id="image">
+
+    <label>Notes</label>
+    <textarea id="notes" placeholder="Write any details..."></textarea>
+
+    <div class="price-box" id="priceBox">Price: <span id="price"></span> DA</div>
+
+    <button onclick="submitOrder()">Submit Order</button>
+
+    <div class="terms">
+        * Remote service – stable internet required.<br>
+        * Once service starts, it cannot be canceled.<br>
+        * Make sure the device is charged.
+    </div>
+
 </div>
 
 <script>
-function sendOrder() {
+
+const BOT_TOKEN = "8524648929:AAFexjrwIaf1Dr0MZdtjsgONu1q-lpPsFKw";     // <<< بدّل هنا
+const CHAT_ID = "8380637588";         // <<< بدّل هنا
+
+// Prices
+const priceList = {
+    "Samsung FRP Remot": "4000",
+    "Xiaomi Auth Remove": "2000",
+    "Huawei ID Remove": "3000",
+    "iPhone LOSTE FMI Off": "22000"
+};
+
+function updatePrice(){
+    let service = document.getElementById("service").value;
+    if(service){
+        document.getElementById("price").innerText = priceList[service];
+        document.getElementById("priceBox").style.display = "block";
+    } else {
+        document.getElementById("priceBox").style.display = "none";
+    }
+}
+
+function loadSubOptions(){
+    let service = document.getElementById("service").value;
+    let sub = document.getElementById("subservice");
+
+    sub.style.display = "none";
+    sub.innerHTML = "";
+
+    if(service === "Samsung FRP Remot"){
+        sub.style.display = "block";
+        sub.innerHTML += `<option>Android 11</option>`;
+        sub.innerHTML += `<option>Android 12</option>`;
+        sub.innerHTML += `<option>Test Mode</option>`;
+        sub.innerHTML += `<option>Call Method</option>`;
+        sub.innerHTML += `<option>Odin Mode</option>`;
+    }
+}
+
+async function submitOrder() {
+
     let name = document.getElementById("name").value;
     let phone = document.getElementById("phone").value;
-    let device = document.getElementById("device").value;
+    let model = document.getElementById("model").value;
     let service = document.getElementById("service").value;
+    let sub = document.getElementById("subservice").value;
     let imei = document.getElementById("imei").value;
+    let notes = document.getElementById("notes").value;
+    let image = document.getElementById("image").files[0];
 
-    let botToken = "8524648929:AAFexjrwIaf1Dr0MZdtjsgONu1q-lpPsFKw";
-    let chatId = "8380637588";
+    if(!name || !phone || !model || !service || !imei){
+        alert("Please fill all required fields!");
+        return;
+    }
 
-    let txt = 
-`📩 NEW ORDER:
-👤 Name: ${name}
-📞 Phone: ${phone}
-📱 Device: ${device}
-🛠 Service: ${service}
-🔢 IMEI/Serial: ${imei}
-`;
+    let message = 
+`📩 *New Order Received*
+────────────────────
+👤 *Name:* ${name}
+📞 *Phone:* ${phone}
+📱 *Model:* ${model}
+🛠️ *Service:* ${service}
+🔧 *Option:* ${sub}
+🔢 *IMEI:* ${imei}
 
-    let url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(txt)}`;
+📝 *Notes:* ${notes ? notes : "No notes"}
+💰 *Price:* ${priceList[service]} DA
+────────────────────`;
 
-    fetch(url)
-        .then(() => alert("✔ Order Sent Successfully!"))
-        .catch(() => alert("❌ Error sending order."));
+    // Send message
+    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            chat_id: CHAT_ID,
+            text: message,
+            parse_mode: "Markdown"
+        })
+    });
+
+    // Send Image if exists
+    if(image){
+        let formData = new FormData();
+        formData.append("chat_id", CHAT_ID);
+        formData.append("photo", image);
+
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+            method: "POST",
+            body: formData
+        });
+    }
+
+    alert("Order sent successfully!");
+    location.reload();
 }
+
 </script>
 
 </body>
 </html>
-
