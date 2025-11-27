@@ -1,86 +1,186 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-    <style>
-        body {
-            background: #0d1224;
-            font-family: Arial;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-        .login-box {
-            background: #141a35;
-            padding: 25px;
-            border-radius: 12px;
-            width: 320px;
-            text-align: center;
-        }
-        input {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 8px;
-        }
-        button {
-            background: #3b82f6;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Login - AK Unlock</title>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial;
+        background: linear-gradient(135deg, #141E30, #243B55);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .login-box {
+        width: 350px;
+        background: #ffffff10;
+        backdrop-filter: blur(10px);
+        padding: 25px;
+        border-radius: 20px;
+        color: #fff;
+        box-shadow: 0 0 20px #00000050;
+    }
+
+    .login-box h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .input-group {
+        margin-bottom: 15px;
+        position: relative;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px;
+        border-radius: 10px;
+        border: none;
+        outline: none;
+        background: #ffffff20;
+        color: #fff;
+    }
+
+    .show-pass {
+        position: absolute;
+        right: 12px;
+        top: 12px;
+        cursor: pointer;
+        color: #ddd;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 12px;
+        background: #00C6FF;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        color: #000;
+        transition: 0.2s;
+    }
+
+    .btn:hover {
+        background: #00a7d8;
+    }
+
+    #remember {
+        margin-right: 5px;
+    }
+
+    .error {
+        color: #ff4444;
+        text-align: center;
+        display: none;
+        margin-bottom: 10px;
+    }
+
+    .loading {
+        display: none;
+        text-align: center;
+        margin-bottom: 10px;
+        color: #00C6FF;
+    }
+
+    .support {
+        margin-top: 15px;
+        text-align: center;
+    }
+
+    .support a {
+        color: #00C6FF;
+        text-decoration: none;
+    }
+</style>
 </head>
 <body>
 
 <div class="login-box">
-    <h2>تسجيل الدخول</h2>
+    <h2>AK Unlock Login</h2>
 
-    <input type="text" id="username" placeholder="اسم المستخدم">
-    <input type="password" id="password" placeholder="كلمة المرور">
+    <div class="error" id="errorMsg">⚠️ Incorrect username or password!</div>
+    <div class="loading" id="loadingMsg">Loading...</div>
 
-    <button onclick="login()">دخول</button>
+    <div class="input-group">
+        <input type="text" id="username" placeholder="Username">
+    </div>
 
-    <p id="error" style="color:red;"></p>
+    <div class="input-group">
+        <input type="password" id="password" placeholder="Password">
+        <span class="show-pass" onclick="togglePassword()">👁️</span>
+    </div>
+
+    <label style="font-size: 14px;">
+        <input type="checkbox" id="remember"> Remember Me
+    </label>
+
+    <button class="btn" onclick="login()">Login</button>
+
+    <div class="support">
+        <a href="https://wa.me/213655404032">Contact Support</a>
+    </div>
 </div>
 
 <script>
-    // قائمة المستخدمين
+    // =======================================
+    // 💠 قائمة المستخدمين: زيد قد ما تحب
+    // =======================================
     const users = [
         { username: "abdelkader", password: "1234" },
-        { username: "ak", password: "2222" },
-        { username: "user1", password: "0000" },
-        {username: "badi", password: "1234"},
-        {username: "chifae", password: "1234"},
-        {username: "mohamed", password: "1234"},
-        {username: "karim", password: "1234"},
-        {username: "lotfi", password:"1234"},
-        {username: "gabserver", password:"1234"}
+        { username: "lotfi", password: "1234" },
+        { username: "mohamed", password: "1234" },
+        { username: "gabserver", password: "1234" },
+        { username: "chifae", password: "1234"},
+        { username: "karim", password: "1234"},
+        { username: "badi", password: "1234"},
+        { username: "abdoo", password: "1234"},
+        { username: "user1", password: "1234"}
     ];
+    // =======================================
+
+    function togglePassword() {
+        let pass = document.getElementById("password");
+        pass.type = pass.type === "password" ? "text" : "password";
+    }
 
     function login() {
-        const u = document.getElementById("username").value.trim();
-        const p = document.getElementById("password").value.trim();
+        let user = document.getElementById("username").value;
+        let pass = document.getElementById("password").value;
+        let error = document.getElementById("errorMsg");
+        let loading = document.getElementById("loadingMsg");
+        let remember = document.getElementById("remember");
 
-        const found = users.find(x => x.username === u && x.password === p);
+        error.style.display = "none";
+        loading.style.display = "block";
 
-        if (!found) {
-            document.getElementById("error").textContent = "❌ معلومات الدخول غير صحيحة";
-            return;
-        }
+        setTimeout(() => {
+            loading.style.display = "none";
 
-        // حفظ اسم المستخدم
-        localStorage.setItem("username", u);
+            // 🔍 التحقق من جميع المستخدمين
+            const found = users.find(u => u.username === user && u.password === pass);
 
-        // توجيه للصفحة الرئيسية
-        window.location.href = "web.html";
+            if (found) {
+                if (remember.checked) {
+                    localStorage.setItem("login", "true");
+                }
+
+                // تم تسجيل الدخول
+                window.location.href = "web.html";  // بدّلها بالصفحة لي تحب
+            } else {
+                error.style.display = "block";
+            }
+
+        }, 1200);
+    }
+
+    // دخول تلقائي إذا Remember Me كان مفعل
+    if (localStorage.getItem("login") === "true") {
+        window.location.href = "home.html";
     }
 </script>
 
