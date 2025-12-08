@@ -3,100 +3,126 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AK Unlock - iPhone Check</title>
-
+<title>IMEI Checker 🔥</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #f2f2f2;
-        margin: 0; padding: 0;
-        display: flex; justify-content: center; align-items: center;
-        height: 100vh;
-    }
-    .box {
-        width: 350px;
-        background: #fff;
-        padding: 25px; border-radius: 15px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        text-align: center;
-    }
-    h2 {
-        margin: 0;
-        margin-bottom: 15px;
-        font-size: 22px;
-    }
-    input {
-        width: 100%; padding: 12px;
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        font-size: 15px;
-    }
-    button {
-        width: 100%; padding: 12px;
-        margin-top: 15px;
-        background: black; color: white;
-        border: none; border-radius: 10px;
-        font-size: 16px; cursor: pointer;
-        font-weight: bold;
-    }
-    .result {
-        margin-top: 20px;
-        padding: 15px;
-        background: #f7f7f7;
-        border-radius: 10px;
-        text-align: left;
-        display: none;
-        font-size: 14px;
-    }
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+  body{
+    background: linear-gradient(135deg,#6a11cb,#2575fc);
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  }
+  .container{
+    background:#fff;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.2);
+    width:350px;
+    text-align:center;
+  }
+  h2{
+    color:#333;
+    margin-bottom:20px;
+  }
+  input,select{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:10px;
+    border:1px solid #ccc;
+    font-size:16px;
+    transition:.3s;
+  }
+  input:focus,select:focus{
+    outline:none;
+    border-color:#2575fc;
+    box-shadow:0 0 8px rgba(37,117,252,0.5);
+  }
+  button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    background: linear-gradient(45deg,#6a11cb,#2575fc);
+    color:#fff;
+    font-weight:600;
+    cursor:pointer;
+    margin-top:10px;
+    transition:0.4s;
+    position:relative;
+    overflow:hidden;
+  }
+  button:hover{
+    transform:scale(1.05);
+  }
+  button:active::after{
+    content:"";
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:rgba(255,255,255,0.3);
+    top:0;
+    left:0;
+    border-radius:12px;
+  }
+  #status{
+    margin-top:15px;
+    font-weight:600;
+    color:green;
+    min-height:24px;
+  }
 </style>
 </head>
 <body>
-
-<div class="box">
-    <h2>🔍 iPhone Check</h2>
-
-    <input id="value" type="text" placeholder="Enter IMEI or Serial">
-
-    <button onclick="checkDevice()">Check</button>
-
-    <div class="result" id="result"></div>
+<div class="container">
+  <h2>IMEI Checker 🚀</h2>
+  <input type="text" id="imei" placeholder="Enter IMEI"/>
+  <select id="service">
+    <option value="check gsx">chech gsx</option>
+    <option value="check on/off">check on/off</option>
+    <option value="check clean/loste">check clean/loste</option>
+    <option value="check case id">check case id</option>
+  </select>
+  <button onclick="sendIMEI()">Check IMEI</button>
+  <div id="status"></div>
 </div>
 
-
 <script>
-async function checkDevice() {
-    let imei = document.getElementById("value").value.trim();
-    let result = document.getElementById("result");
+const BOT_TOKEN = "8524648929:AAFexjrwIaf1Dr0MZdtjsgONu1q-lpPsFKw";
+const CHAT_ID   = "8380637588";
 
-    if (imei === "") {
-        alert("Please enter IMEI or Serial");
+function sendIMEI(){
+    const imei = document.getElementById('imei').value.trim();
+    const service = document.getElementById('service').value;
+    const status = document.getElementById('status');
+
+    if(!imei){
+        alert("⚠️ Enter IMEI!");
         return;
     }
 
-    result.style.display = "block";
-    result.innerHTML = "⏳ Checking...";
+    status.style.color = "#2575fc";
+    status.innerHTML = "Sending... ⏳";
 
-    // API بدون PHP
-    let url = `https://api.iicloud.info/check?imei=${imei}`;
+    const msg = `📩 *New IMEI Request*\n\n🔧 Service: *${service}*\n📱 IMEI: *${imei}*`;
 
-    try {
-        const res = await fetch(url);
-        const data = await res.json();
-
-        result.innerHTML = `
-            <b>Model:</b> ${data.model || "N/A"}<br>
-            <b>IMEI:</b> ${data.imei || "N/A"}<br>
-            <b>FMI:</b> ${data.fmi || "N/A"}<br>
-            <b>iCloud:</b> ${data.icloud || "N/A"}<br>
-            <b>Country:</b> ${data.country || "N/A"}<br>
-            <b>Status:</b> ${data.status || "N/A"}<br>
-            <b>Date:</b> ${new Date().toLocaleString()}
-        `;
-    } catch (err) {
-        result.innerHTML = "❌ Error connecting to API.";
-    }
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({chat_id:CHAT_ID,text:msg,parse_mode:"Markdown"})
+    })
+    .then(res=>{
+        status.style.color="green";
+        status.innerHTML="✔️ Request sent successfully!";
+        document.getElementById('imei').value="";
+    })
+    .catch(err=>{
+        status.style.color="red";
+        status.innerHTML="❌ Failed to send request.";
+    });
 }
 </script>
-
 </body>
 </html>
